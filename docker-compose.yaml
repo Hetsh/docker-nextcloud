@@ -1,18 +1,20 @@
 version: '3.7'
 services:
   php-fpm:
-    image: php-fpm-nextcloud
+    image: hetsh/php-fpm-nextcloud
     ports:
       - "9000:9000"
     volumes:
-      - ./cloud:/srv
-      - ./log/php:/var/log/php7
+      - /tmp/cloud:/srv
+      - /tmp/log/php:/var/log/php7
+      - /etc/localtime:/etc/localtime:ro
   nginx:
     image: hetsh/nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./cloud:/srv
       - ./host:/etc/nginx/conf.d
-      - ./log/nginx:/var/log/nginx
+      - /tmp/cloud:/srv
+      - /tmp/log/nginx:/var/log/nginx
+      - /etc/localtime:/etc/localtime:ro
