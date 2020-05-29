@@ -24,8 +24,9 @@ if ! [ -e "$ARCHIVE_PATH" ]; then
 	curl --location "https://download.nextcloud.com/server/releases/latest.tar.bz2" --output "$ARCHIVE_PATH"
 fi
 
-# Set up temporary srv directory
 APP_NAME="nextcloud"
+
+# Set up temporary srv directory
 TMP_SRV_DIR=$(mktemp -d "/tmp/$APP_NAME-DATA-XXXXXXXXXX")
 add_cleanup "rm -rf $TMP_SRV_DIR"
 tar --extract --bzip2 --strip-components=1 --directory "$TMP_SRV_DIR" --file "$ARCHIVE_PATH"
@@ -33,23 +34,16 @@ tar --extract --bzip2 --strip-components=1 --directory "$TMP_SRV_DIR" --file "$A
 # Set up temporary hosts directory
 TMP_HOSTS_DIR=$(mktemp -d "/tmp/$APP_NAME-HOSTS-XXXXXXXXXX")
 add_cleanup "rm -rf $TMP_HOSTS_DIR"
-echo "server {
-	listen 80 default_server;
-	listen [::]:80 default_server;
-	server_name _;
+cp "host.conf" "$TMP_HOSTS_DIR"
 
-	root /srv;
-	index index.html;
-
-	location ~ \.php$ {
-		fastcgi_pass $APP_NAME-php-fpm:9000;
-		include fastcgi_params;
-		fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-	}
-}" > "$TMP_HOSTS_DIR/host.conf"
+# Set up temporary log directory
+TMP_LOG_DIR=$(mktemp -d "/tmp/$APP_NAME-LOG-XXXXXXXXXX")
+add_cleanup "rm -rf $TMP_LOG_DIR"
+mkdir "$TMP_LOG_DIR/nginx"
+mkdir "$TMP_LOG_DIR/php"
 
 # Apply permissions, UID & GID matches process user
-chown -R "33":"33" "$TMP_SRV_DIR" "$TMP_HOSTS_DIR"
+chown -R "33":"33" "$TMP_SRV_DIR" "$TMP_HOSTS_DIR" "$TMP_LOG_DIR"
 
 # Network
 NETWORK_NAME="$APP_NAME-test"
@@ -64,12 +58,14 @@ docker run \
 --net "$NETWORK_NAME" \
 --publish 9000:9000/tcp \
 --mount type=bind,source="$TMP_SRV_DIR",target="/srv" \
+--mount type=bind,source="$TMP_LOG_DIR/php",target="/var/log/php7" \
 --mount type=bind,source=/etc/localtime,target=/etc/localtime,readonly \
 --name "$PHP_CONT_NAME" \
 hetsh/php-fpm-nextcloud
 add_cleanup "docker stop $PHP_CONT_NAME"
 
 # Start nginx
+NGINX_CONT_NAME="$APP_NAME-nginx"
 docker run \
 --rm \
 --interactive \
@@ -77,6 +73,7 @@ docker run \
 --publish 80:80/tcp \
 --mount type=bind,source="$TMP_SRV_DIR",target="/srv" \
 --mount type=bind,source="$TMP_HOSTS_DIR",target="/etc/nginx/conf.d" \
+--mount type=bind,source="$TMP_LOG_DIR/nginx",target="/var/log/nginx" \
 --mount type=bind,source=/etc/localtime,target=/etc/localtime,readonly \
---name "$APP_NAME-nginx" \
+--name "$NGINX_CONT_NAME" \
 hetsh/nginx
