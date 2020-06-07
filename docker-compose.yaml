@@ -5,8 +5,8 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - /tmp/cloud:/srv
-      - /tmp/log/php:/var/log/php7
+      - /tmp/cloud/data:/srv
+      - /tmp/cloud/log_php:/var/log/php7
       - /etc/localtime:/etc/localtime:ro
   nginx:
     image: hetsh/nginx
@@ -15,6 +15,7 @@ services:
       - "443:443"
     volumes:
       - ./host.conf:/etc/nginx/conf.d/host.conf:ro
-      - /tmp/cloud:/srv
-      - /tmp/log/nginx:/var/log/nginx
+      - /tmp/cloud/ssl:/etc/ssl
+      - /tmp/cloud/data:/srv
+      - /tmp/cloud/log_nginx:/var/log/nginx
       - /etc/localtime:/etc/localtime:ro

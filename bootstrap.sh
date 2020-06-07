@@ -18,14 +18,20 @@ if ! [ -e "$ARCHIVE_PATH" ]; then
 fi
 
 # Extract archive
-CLOUD_PATH="/tmp/cloud"
+BASE_PATH="/tmp/cloud"
+CLOUD_PATH="$BASE_PATH/data"
 mkdir -p "$CLOUD_PATH"
 tar --extract --bzip2 --strip-components=1 --directory "$CLOUD_PATH" --file "$ARCHIVE_PATH"
 
 # Log dirs
-LOG_PATH="/tmp/log"
-mkdir -p "$LOG_PATH/nginx"
-mkdir -p "$LOG_PATH/php"
+LOG_PATH="$BASE_PATH/log"
+mkdir -p "${LOG_PATH}_nginx"
+mkdir -p "${LOG_PATH}_php"
+
+# Certs
+SSL_DIR="$BASE_PATH/ssl"
+mkdir -p "$SSL_DIR"
+openssl req -x509 -nodes -newkey rsa:4096 -days 365 -keyout "$SSL_DIR/cloud.key" -out "$SSL_DIR/cloud.cert" -subj "/CN=localhost"
 
 # Set permissions
-chown -R http:http "$CLOUD_PATH" "$LOG_PATH"
+chown -R http:http "$BASE_PATH"
