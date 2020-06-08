@@ -22,6 +22,7 @@ BASE_PATH="/tmp/cloud"
 CLOUD_PATH="$BASE_PATH/data"
 mkdir -p "$CLOUD_PATH"
 tar --extract --bzip2 --strip-components=1 --directory "$CLOUD_PATH" --file "$ARCHIVE_PATH"
+echo "<?php phpinfo(); ?>" > "$CLOUD_PATH/info.php"
 
 # Log dirs
 LOG_PATH="$BASE_PATH/log"
