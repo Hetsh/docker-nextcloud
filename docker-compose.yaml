@@ -2,8 +2,6 @@ version: '3.7'
 services:
   php-fpm:
     image: hetsh/php-fpm-nextcloud
-    ports:
-      - "9000:9000"
     volumes:
       - /tmp/cloud/data:/srv
       - /tmp/cloud/log_php:/var/log/php7
