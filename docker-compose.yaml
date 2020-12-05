@@ -17,3 +17,7 @@ services:
       - /tmp/cloud/data:/srv
       - /tmp/cloud/log_nginx:/var/log/nginx
       - /etc/localtime:/etc/localtime:ro
+  mariadb:
+    image: hetsh/mariadb
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
