@@ -3,8 +3,8 @@ services:
   php-fpm:
     image: hetsh/php-nextcloud
     volumes:
-      - /tmp/cloud/data:/srv
-      - /tmp/cloud/log_php:/var/log/php7
+      - /root/cloud/data:/srv
+      - /root/cloud/log_php:/var/log/php7
       - /etc/localtime:/etc/localtime:ro
   nginx:
     image: hetsh/nginx
@@ -13,9 +13,9 @@ services:
       - "443:443"
     volumes:
       - ./host.conf:/etc/nginx/conf.d/host.conf:ro
-      - /tmp/cloud/ssl:/etc/ssl
-      - /tmp/cloud/data:/srv
-      - /tmp/cloud/log_nginx:/var/log/nginx
+      - /root/cloud/ssl:/etc/ssl
+      - /root/cloud/data:/srv
+      - /root/cloud/log_nginx:/var/log/nginx
       - /etc/localtime:/etc/localtime:ro
   mariadb:
     image: hetsh/mariadb

@@ -12,13 +12,13 @@ then
 fi
 
 # Download archive
-ARCHIVE_PATH="/tmp/nextcloud.tar.bz2"
+ARCHIVE_PATH="/root/nextcloud.tar.bz2"
 if ! [ -e "$ARCHIVE_PATH" ]; then
 	curl --location "https://download.nextcloud.com/server/releases/latest.tar.bz2" --output "$ARCHIVE_PATH"
 fi
 
 # Extract archive
-BASE_PATH="/tmp/cloud"
+BASE_PATH="/root/cloud"
 CLOUD_PATH="$BASE_PATH/data"
 mkdir -p "$CLOUD_PATH"
 tar --extract --bzip2 --strip-components=1 --directory "$CLOUD_PATH" --file "$ARCHIVE_PATH"
