@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   php-fpm:
-    image: hetsh/php-fpm-nextcloud
+    image: hetsh/php-nextcloud
     volumes:
       - /tmp/cloud/data:/srv
       - /tmp/cloud/log_php:/var/log/php7
