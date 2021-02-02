@@ -34,5 +34,11 @@ SSL_DIR="$BASE_PATH/ssl"
 mkdir -p "$SSL_DIR"
 openssl req -x509 -nodes -newkey rsa:4096 -days 365 -keyout "$SSL_DIR/cloud.key" -out "$SSL_DIR/cloud.cert" -subj "/CN=localhost"
 
+# Tables
+DB_PATH="$BASE_PATH/tables"
+mkdir -p "$DB_PATH"
+mariadb-install-db --datadir="$DB_PATH"
+
 # Set permissions
-chown -R http:http "$BASE_PATH"
+chown -R 33:33 "$BASE_PATH"
+chown -R 1374:1374 "$DB_PATH"

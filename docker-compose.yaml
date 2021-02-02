@@ -20,4 +20,5 @@ services:
   mariadb:
     image: hetsh/mariadb
     volumes:
+      - /root/cloud/tables:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
