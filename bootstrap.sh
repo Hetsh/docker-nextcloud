@@ -17,8 +17,11 @@ if ! [ -e "$ARCHIVE_PATH" ]; then
 	curl --location "https://download.nextcloud.com/server/releases/latest.tar.bz2" --output "$ARCHIVE_PATH"
 fi
 
-# Extract archive
+# Clean up
 BASE_PATH="/root/cloud"
+rm -rf "$BASE_PATH"
+
+# Extract archive
 CLOUD_PATH="$BASE_PATH/data"
 mkdir -p "$CLOUD_PATH"
 tar --extract --bzip2 --strip-components=1 --directory "$CLOUD_PATH" --file "$ARCHIVE_PATH"
