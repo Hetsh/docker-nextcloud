@@ -19,6 +19,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
   mariadb:
     image: hetsh/mariadb
+    command:
+      - --log-bin=binlog
     volumes:
+      - ./mariadb.conf:/etc/my.cnf
       - /root/cloud/tables:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
